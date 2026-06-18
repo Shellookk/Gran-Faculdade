@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
-
-const API = 'http://localhost:3001/api/produtos';
+import { useState } from 'react';
 
 const formVazio = { nome: '', descricao: '', preco: '', codigoBarras: '' };
 
@@ -9,20 +7,7 @@ function ProdutosPage() {
   const [form, setForm] = useState(formVazio);
   const [editandoId, setEditandoId] = useState(null);
   const [mensagem, setMensagem] = useState(null);
-
-  useEffect(() => {
-    carregar();
-  }, []);
-
-  async function carregar() {
-    try {
-      const res = await fetch(API);
-      const dados = await res.json();
-      setProdutos(dados);
-    } catch {
-      exibirMensagem('Erro ao conectar com o servidor.', 'erro');
-    }
-  }
+  const [nextId, setNextId] = useState(1);
 
   function exibirMensagem(texto, tipo) {
     setMensagem({ texto, tipo });
@@ -33,32 +18,22 @@ function ProdutosPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     if (!form.nome.trim() || !form.preco) {
       exibirMensagem('Nome e preço são obrigatórios.', 'erro');
       return;
     }
-    try {
-      const url = editandoId ? `${API}/${editandoId}` : API;
-      const method = editandoId ? 'PUT' : 'POST';
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, preco: parseFloat(form.preco) }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        exibirMensagem(err.erro || 'Erro ao salvar produto.', 'erro');
-        return;
-      }
-      exibirMensagem(editandoId ? 'Produto atualizado com sucesso!' : 'Produto criado com sucesso!', 'sucesso');
-      setForm(formVazio);
-      setEditandoId(null);
-      carregar();
-    } catch {
-      exibirMensagem('Erro ao conectar com o servidor.', 'erro');
+    if (editandoId) {
+      setProdutos(produtos.map(p => p.id === editandoId ? { id: editandoId, ...form, preco: parseFloat(form.preco) } : p));
+      exibirMensagem('Produto atualizado com sucesso!', 'sucesso');
+    } else {
+      setProdutos([...produtos, { id: nextId, ...form, preco: parseFloat(form.preco) }]);
+      setNextId(nextId + 1);
+      exibirMensagem('Produto criado com sucesso!', 'sucesso');
     }
+    setForm(formVazio);
+    setEditandoId(null);
   }
 
   function iniciarEdicao(produto) {
@@ -72,20 +47,10 @@ function ProdutosPage() {
     setEditandoId(null);
   }
 
-  async function deletar(id) {
+  function deletar(id) {
     if (!window.confirm('Deseja realmente deletar este produto?')) return;
-    try {
-      const res = await fetch(`${API}/${id}`, { method: 'DELETE' });
-      if (!res.ok) {
-        const err = await res.json();
-        exibirMensagem(err.erro || 'Erro ao deletar.', 'erro');
-        return;
-      }
-      exibirMensagem('Produto deletado com sucesso!', 'sucesso');
-      carregar();
-    } catch {
-      exibirMensagem('Erro ao conectar com o servidor.', 'erro');
-    }
+    setProdutos(produtos.filter(p => p.id !== id));
+    exibirMensagem('Produto deletado com sucesso!', 'sucesso');
   }
 
   return (

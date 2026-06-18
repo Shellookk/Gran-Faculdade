@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
-
-const API = 'http://localhost:3001/api/fornecedores';
+import { useState } from 'react';
 
 const formVazio = { nome: '', cnpj: '', endereco: '', contato: '' };
 
@@ -9,20 +7,7 @@ function FornecedoresPage() {
   const [form, setForm] = useState(formVazio);
   const [editandoId, setEditandoId] = useState(null);
   const [mensagem, setMensagem] = useState(null);
-
-  useEffect(() => {
-    carregar();
-  }, []);
-
-  async function carregar() {
-    try {
-      const res = await fetch(API);
-      const dados = await res.json();
-      setFornecedores(dados);
-    } catch {
-      exibirMensagem('Erro ao conectar com o servidor.', 'erro');
-    }
-  }
+  const [nextId, setNextId] = useState(1);
 
   function exibirMensagem(texto, tipo) {
     setMensagem({ texto, tipo });
@@ -47,32 +32,22 @@ function FornecedoresPage() {
     setForm({ ...form, cnpj: formatarCNPJ(e.target.value) });
   }
 
-  async function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     if (!form.nome.trim() || !form.cnpj.trim()) {
       exibirMensagem('Nome e CNPJ são obrigatórios.', 'erro');
       return;
     }
-    try {
-      const url = editandoId ? `${API}/${editandoId}` : API;
-      const method = editandoId ? 'PUT' : 'POST';
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        exibirMensagem(err.erro || 'Erro ao salvar fornecedor.', 'erro');
-        return;
-      }
-      exibirMensagem(editandoId ? 'Fornecedor atualizado com sucesso!' : 'Fornecedor criado com sucesso!', 'sucesso');
-      setForm(formVazio);
-      setEditandoId(null);
-      carregar();
-    } catch {
-      exibirMensagem('Erro ao conectar com o servidor.', 'erro');
+    if (editandoId) {
+      setFornecedores(fornecedores.map(f => f.id === editandoId ? { id: editandoId, ...form } : f));
+      exibirMensagem('Fornecedor atualizado com sucesso!', 'sucesso');
+    } else {
+      setFornecedores([...fornecedores, { id: nextId, ...form }]);
+      setNextId(nextId + 1);
+      exibirMensagem('Fornecedor criado com sucesso!', 'sucesso');
     }
+    setForm(formVazio);
+    setEditandoId(null);
   }
 
   function iniciarEdicao(fornecedor) {
@@ -86,20 +61,10 @@ function FornecedoresPage() {
     setEditandoId(null);
   }
 
-  async function deletar(id) {
+  function deletar(id) {
     if (!window.confirm('Deseja realmente deletar este fornecedor?')) return;
-    try {
-      const res = await fetch(`${API}/${id}`, { method: 'DELETE' });
-      if (!res.ok) {
-        const err = await res.json();
-        exibirMensagem(err.erro || 'Erro ao deletar.', 'erro');
-        return;
-      }
-      exibirMensagem('Fornecedor deletado com sucesso!', 'sucesso');
-      carregar();
-    } catch {
-      exibirMensagem('Erro ao conectar com o servidor.', 'erro');
-    }
+    setFornecedores(fornecedores.filter(f => f.id !== id));
+    exibirMensagem('Fornecedor deletado com sucesso!', 'sucesso');
   }
 
   return (
