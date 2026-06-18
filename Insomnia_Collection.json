@@ -1,0 +1,112 @@
+{
+  "_type": "export",
+  "sourceControl": "git",
+  "sourceControlMetadata": {
+    "author": "Isaque Rodrigues Rocha",
+    "description": "Gran Faculdade - Projeto Integrador"
+  },
+  "contents": [
+    {
+      "_type": "workspace",
+      "name": "Gran Faculdade - REST API",
+      "description": "Serviços REST para Gerenciamento de Produtos e Fornecedores",
+      "scope": "design",
+      "_id": "wrk_1",
+      "resources": [
+        {
+          "_type": "request_group",
+          "name": "Produtos",
+          "_id": "fld_1",
+          "requests": [
+            {
+              "_type": "request",
+              "name": "Criar Produto",
+              "method": "POST",
+              "url": "http://localhost:3001/api/produtos",
+              "headers": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"nome\": \"Arroz 5kg\",\n  \"descricao\": \"Arroz integral de qualidade premium\",\n  \"preco\": 28.90,\n  \"codigoBarras\": \"7891000315507\"\n}"
+              },
+              "_id": "req_criar_produto"
+            },
+            {
+              "_type": "request",
+              "name": "Listar Produtos",
+              "method": "GET",
+              "url": "http://localhost:3001/api/produtos",
+              "_id": "req_listar_produtos"
+            }
+          ]
+        },
+        {
+          "_type": "request_group",
+          "name": "Fornecedores",
+          "_id": "fld_2",
+          "requests": [
+            {
+              "_type": "request",
+              "name": "Criar Fornecedor",
+              "method": "POST",
+              "url": "http://localhost:3001/api/fornecedores",
+              "headers": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"nome\": \"Distribuidora ABC Ltda\",\n  \"cnpj\": \"12.345.678/0001-90\",\n  \"endereco\": \"Rua das Flores, 123 - São Paulo, SP\",\n  \"contato\": \"(11) 99999-0000\"\n}"
+              },
+              "_id": "req_criar_fornecedor"
+            },
+            {
+              "_type": "request",
+              "name": "Listar Fornecedores",
+              "method": "GET",
+              "url": "http://localhost:3001/api/fornecedores",
+              "_id": "req_listar_fornecedores"
+            }
+          ]
+        },
+        {
+          "_type": "request_group",
+          "name": "Associações",
+          "_id": "fld_3",
+          "requests": [
+            {
+              "_type": "request",
+              "name": "Criar Associação",
+              "method": "POST",
+              "url": "http://localhost:3001/api/associacoes",
+              "headers": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mimeType": "application/json",
+                "text": "{\n  \"produtoId\": 1,\n  \"fornecedorId\": 1\n}"
+              },
+              "_id": "req_criar_associacao"
+            },
+            {
+              "_type": "request",
+              "name": "Listar Associações",
+              "method": "GET",
+              "url": "http://localhost:3001/api/associacoes",
+              "_id": "req_listar_associacoes"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+SERVIÇOS REST - GRAN FACULDADE
+======================================
+Projeto: Gerenciamento de Produtos e Fornecedores
+Aluno: Isaque Rodrigues Rocha
+Backend: Node.js + Express
+Porta: 3001
+
+URL BASE: http://localhost:3001/api
+
+======================================
+EXEMPLO 1: CRIAR PRODUTO
+======================================
+
+POST http://localhost:3001/api/produtos
+Content-Type: application/json
+
+{
+  "nome": "Arroz 5kg",
+  "descricao": "Arroz integral de qualidade premium",
+  "preco": 28.90,
+  "codigoBarras": "7891000315507"
+}
+
+Resposta esperada (201):
+{
+  "id": 1,
+  "nome": "Arroz 5kg",
+  "descricao": "Arroz integral de qualidade premium",
+  "preco": 28.90,
+  "codigoBarras": "7891000315507"
+}
+
+======================================
+EXEMPLO 2: CRIAR FORNECEDOR
+======================================
+
+POST http://localhost:3001/api/fornecedores
+Content-Type: application/json
+
+{
+  "nome": "Distribuidora ABC Ltda",
+  "cnpj": "12.345.678/0001-90",
+  "endereco": "Rua das Flores, 123 - São Paulo, SP",
+  "contato": "(11) 99999-0000"
+}
+
+Resposta esperada (201):
+{
+  "id": 1,
+  "nome": "Distribuidora ABC Ltda",
+  "cnpj": "12.345.678/0001-90",
+  "endereco": "Rua das Flores, 123 - São Paulo, SP",
+  "contato": "(11) 99999-0000"
+}
+
+======================================
+EXEMPLO 3: CRIAR ASSOCIAÇÃO PRODUTO-FORNECEDOR
+======================================
+
+POST http://localhost:3001/api/associacoes
+Content-Type: application/json
+
+{
+  "produtoId": 1,
+  "fornecedorId": 1
+}
+
+Resposta esperada (201):
+{
+  "mensagem": "Associação criada com sucesso",
+  "produto": {
+    "id": 1,
+    "nome": "Arroz 5kg",
+    "descricao": "Arroz integral de qualidade premium",
+    "preco": 28.90,
+    "codigoBarras": "7891000315507"
+  },
+  "fornecedor": {
+    "id": 1,
+    "nome": "Distribuidora ABC Ltda",
+    "cnpj": "12.345.678/0001-90",
+    "endereco": "Rua das Flores, 123 - São Paulo, SP",
+    "contato": "(11) 99999-0000"
+  }
+}
+
+======================================
+ENDPOINTS DISPONÍVEIS
+======================================
+
+PRODUTOS:
+- GET    /api/produtos              → Listar todos os produtos
+- POST   /api/produtos              → Criar novo produto
+- PUT    /api/produtos/:id          → Atualizar produto
+- DELETE /api/produtos/:id          → Deletar produto
+
+FORNECEDORES:
+- GET    /api/fornecedores          → Listar todos os fornecedores
+- POST   /api/fornecedores          → Criar novo fornecedor
+- PUT    /api/fornecedores/:id      → Atualizar fornecedor
+- DELETE /api/fornecedores/:id      → Deletar fornecedor
+
+ASSOCIAÇÕES:
+- GET    /api/associacoes                              → Listar todas as associações
+- POST   /api/associacoes                              → Criar associação
+- DELETE /api/associacoes/:produtoId/:fornecedorId     → Remover associação
+- GET    /api/associacoes/produto/:id                  → Fornecedores de um produto
+- GET    /api/associacoes/fornecedor/:id               → Produtos de um fornecedor
+
+======================================
+COMO TESTAR NO INSOMNIA
+======================================
+
+1. Abra o Insomnia
+2. Crie uma nova requisição (Ctrl+N)
+3. Copie a URL do exemplo (ex: POST http://localhost:3001/api/produtos)
+4. Defina o método (POST)
+5. Na aba "Body" → selecione "JSON"
+6. Cole o JSON do exemplo
+7. Clique em "Send"
+8. Verifique a resposta (deve ser 201 Created)
+
+======================================
+OBSERVAÇÕES
+======================================
+
+- Todos os endpoints aceitam JSON
+- CORS habilitado para localhost
+- Armazenamento em memória (dados perdidos ao reiniciar servidor)
+- Para iniciar: cd "Backend/Atividade 1" && npm start
+- Servidor roda em http://localhost:3001
